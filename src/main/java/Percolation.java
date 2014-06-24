@@ -26,40 +26,42 @@ public class Percolation {
 
     // open site (row i, column j) if it is not already
     public void open(int i, int j) {
-
-        if ((i < 0 || i > size - 1) || (j < 0 || j > size - 1)) {
+        if ((i < 1 || i > size) || (j < 1 || j > size)) {
             throw new java.lang.IndexOutOfBoundsException();
         }
 
-        int siteIndex = i * size + j;
+        int Lo = i - 1;
+        int Hi = j - 1;
+
+        int siteIndex = Lo * size + Hi;
 
         if (!isOpen(i, j)) {
-            site[i][j] = 1;
-            if (i == 0) {
+            site[Lo][Hi] = 1;
+            if (i == 1) {
                 uf.union(siteIndex, top);
             } else {
                 if (isOpen(i - 1, j)) {
-                    uf.union(siteIndex, (i - 1) * size + j);
+                    uf.union(siteIndex, (Lo - 1) * size + Hi);
                 }
             }
 
-            if (i == size - 1) {
+            if (i == size) {
                 uf.union(siteIndex, bottom);
             } else {
                 if (isOpen(i + 1, j)) {
-                    uf.union(siteIndex, (i + 1) * size + j);
+                    uf.union(siteIndex, (Lo + 1) * size + Hi);
                 }
             }
 
-            if (j > 0) {
+            if (j > 1) {
                 if (isOpen(i, j - 1)) {
-                    uf.union(siteIndex, i * size + (j - 1));
+                    uf.union(siteIndex, Lo * size + (Hi - 1));
                 }
             }
 
-            if (j < size - 1) {
+            if (j < size) {
                 if (isOpen(i, j + 1)) {
-                    uf.union(siteIndex, i * size + (j + 1));
+                    uf.union(siteIndex, Lo * size + (Hi + 1));
                 }
             }
         }
@@ -67,20 +69,28 @@ public class Percolation {
 
     // is site (row i, column j) open?
     public boolean isOpen(int i, int j) {
-        if ((i < 0 || i > size - 1) || (j < 0 || j > size - 1)) {
+        if ((i < 1 || i > size) || (j < 1 || j > size)) {
             throw new java.lang.IndexOutOfBoundsException();
         }
 
-        return site[i][j] == 1;
+        int Lo = i - 1;
+        int Hi = j - 1;
+
+        return site[Lo][Hi] == 1;
     }
 
     // is site (row i, column j) full?
     public boolean isFull(int i, int j) {
-        if ((i < 0 || i > size - 1) || (j < 0 || j > size - 1)) {
+        if ((i < 1 || i > size) || (j < 1 || j > size)) {
             throw new java.lang.IndexOutOfBoundsException();
         }
 
-        return site[i][j] == 0;
+        int Lo = i - 1;
+        int Hi = j - 1;
+
+        int siteIndex = Lo * size + Hi;
+
+        return uf.connected(top, siteIndex);
     }
 
     public boolean percolates() {             // does the system percolate?

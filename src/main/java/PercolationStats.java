@@ -26,8 +26,8 @@ public class PercolationStats {
 
             for (int n = 0; n < N * N; n++) {
                 do {
-                    i = StdRandom.uniform(N);
-                    j = StdRandom.uniform(N);
+                    i = StdRandom.uniform(1, N + 1);
+                    j = StdRandom.uniform(1, N + 1);
                 } while(p.isOpen(i, j));
                 p.open(i, j);
                 pThreshold[t] += 1;
