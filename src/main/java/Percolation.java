@@ -6,7 +6,8 @@ public class Percolation {
     private int size;
     private int top;
     private int bottom;
-    private WeightedQuickUnionUF uf;
+    private WeightedQuickUnionUF uf1;
+    private WeightedQuickUnionUF uf2;
 
     // create N-by-N grid, with all sites blocked
     public Percolation(int N) {
@@ -24,7 +25,8 @@ public class Percolation {
             }
         }
 
-        uf = new WeightedQuickUnionUF(size * size + 2);
+        uf1 = new WeightedQuickUnionUF(size * size + 1);
+        uf2 = new WeightedQuickUnionUF(size * size + 2);
     }
 
     // open site (row i, column j) if it is not already
@@ -41,32 +43,38 @@ public class Percolation {
         if (!isOpen(i, j)) {
             site[lower][upper] = 1;
             if (i == 1) {
-                uf.union(siteIndex, top);
+                uf1.union(siteIndex, top);
+                uf2.union(siteIndex, top);
             } else {
                 if (isOpen(i - 1, j)) {
-                    uf.union(siteIndex, (lower - 1) * size + upper);
+                    uf1.union(siteIndex, (lower - 1) * size + upper);
+                    uf2.union(siteIndex, (lower - 1) * size + upper);
                 }
             }
 
             if (i == size) {
-                uf.union(siteIndex, bottom);
+                uf2.union(siteIndex, bottom);
             } else {
                 if (isOpen(i + 1, j)) {
-                    uf.union(siteIndex, (lower + 1) * size + upper);
+                    uf1.union(siteIndex, (lower + 1) * size + upper);
+                    uf2.union(siteIndex, (lower + 1) * size + upper);
                 }
             }
 
             if (j > 1) {
                 if (isOpen(i, j - 1)) {
-                    uf.union(siteIndex, lower * size + (upper - 1));
+                    uf1.union(siteIndex, lower * size + (upper - 1));
+                    uf2.union(siteIndex, lower * size + (upper - 1));
                 }
             }
 
             if (j < size) {
                 if (isOpen(i, j + 1)) {
-                    uf.union(siteIndex, lower * size + (upper + 1));
+                    uf1.union(siteIndex, lower * size + (upper + 1));
+                    uf2.union(siteIndex, lower * size + (upper + 1));
                 }
             }
+
         }
     }
 
@@ -93,11 +101,11 @@ public class Percolation {
 
         int siteIndex = lower * size + upper;
 
-        return uf.connected(top, siteIndex);
+        return uf1.connected(top, siteIndex);
     }
 
     public boolean percolates() {             // does the system percolate?
-        return uf.connected(top, bottom);
+        return uf2.connected(top, bottom);
     }
 
 }
