@@ -10,6 +10,9 @@ public class Percolation {
 
     // create N-by-N grid, with all sites blocked
     public Percolation(int N) {
+        if (N <= 0) {
+            throw new IllegalArgumentException();
+        }
         size = N;
         top = size * size;
         bottom = size * size + 1;
@@ -30,18 +33,18 @@ public class Percolation {
             throw new java.lang.IndexOutOfBoundsException();
         }
 
-        int Lo = i - 1;
-        int Hi = j - 1;
+        int lower = i - 1;
+        int upper = j - 1;
 
-        int siteIndex = Lo * size + Hi;
+        int siteIndex = lower * size + upper;
 
         if (!isOpen(i, j)) {
-            site[Lo][Hi] = 1;
+            site[lower][upper] = 1;
             if (i == 1) {
                 uf.union(siteIndex, top);
             } else {
                 if (isOpen(i - 1, j)) {
-                    uf.union(siteIndex, (Lo - 1) * size + Hi);
+                    uf.union(siteIndex, (lower - 1) * size + upper);
                 }
             }
 
@@ -49,19 +52,19 @@ public class Percolation {
                 uf.union(siteIndex, bottom);
             } else {
                 if (isOpen(i + 1, j)) {
-                    uf.union(siteIndex, (Lo + 1) * size + Hi);
+                    uf.union(siteIndex, (lower + 1) * size + upper);
                 }
             }
 
             if (j > 1) {
                 if (isOpen(i, j - 1)) {
-                    uf.union(siteIndex, Lo * size + (Hi - 1));
+                    uf.union(siteIndex, lower * size + (upper - 1));
                 }
             }
 
             if (j < size) {
                 if (isOpen(i, j + 1)) {
-                    uf.union(siteIndex, Lo * size + (Hi + 1));
+                    uf.union(siteIndex, lower * size + (upper + 1));
                 }
             }
         }
@@ -73,10 +76,10 @@ public class Percolation {
             throw new java.lang.IndexOutOfBoundsException();
         }
 
-        int Lo = i - 1;
-        int Hi = j - 1;
+        int lower = i - 1;
+        int upper = j - 1;
 
-        return site[Lo][Hi] == 1;
+        return site[lower][upper] == 1;
     }
 
     // is site (row i, column j) full?
@@ -85,10 +88,10 @@ public class Percolation {
             throw new java.lang.IndexOutOfBoundsException();
         }
 
-        int Lo = i - 1;
-        int Hi = j - 1;
+        int lower = i - 1;
+        int upper = j - 1;
 
-        int siteIndex = Lo * size + Hi;
+        int siteIndex = lower * size + upper;
 
         return uf.connected(top, siteIndex);
     }
