@@ -2,7 +2,7 @@
  * Created by Qubo Song on 6/23/2014.
  */
 public class Percolation {
-    private int[][] site;
+    private byte[][] site;
     private int size;
     private int top;
     private int bottom;
@@ -17,7 +17,7 @@ public class Percolation {
         size = N;
         top = size * size;
         bottom = size * size + 1;
-        site = new int[size][size];
+        site = new byte[size][size];
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
