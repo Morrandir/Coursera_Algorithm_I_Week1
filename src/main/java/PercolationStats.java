@@ -7,8 +7,8 @@ public class PercolationStats {
     private double[] pThreshold;
     private double mean = -1;
     private double stddev = -1;
-    private double confLo;
-    private double confHi;
+    private double confLo = -1;
+    private double confHi = -1;
 
     // perform T independent computational experiments on an N-by-N grid
     public PercolationStats(int N, int T) {
@@ -51,6 +51,11 @@ public class PercolationStats {
     // sample standard deviation of percolation threshold
     public double stddev() {
         double deviation = 0;
+
+        if (mean == -1) {
+            mean = mean();
+        }
+
         for (int i = 0; i < count; i++) {
             deviation += (pThreshold[i] - mean) * (pThreshold[i] - mean);
         }
@@ -59,11 +64,27 @@ public class PercolationStats {
 
     // returns lower bound of the 95% confidence interval
     public double confidenceLo() {
+        if (mean == -1) {
+            mean = mean();
+        }
+
+        if (stddev == -1) {
+            stddev = stddev();
+        }
+
         return (mean - 1.96 * stddev / Math.sqrt(count));
     }
 
     // returns upper bound of the 95% confidence interval
     public double confidenceHi() {
+        if (mean == -1) {
+            mean = mean();
+        }
+
+        if (stddev == -1) {
+            stddev = stddev();
+        }
+
         return (mean + 1.96 * stddev / Math.sqrt(count));
     }
 
